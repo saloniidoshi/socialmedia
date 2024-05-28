@@ -53,10 +53,10 @@ const loginUser = async (req, res) => {
     try {
         const { username, password } = req.body;
         if (username && password) {
-            const findUser = await User.findOne({ username: username })
+            const findUser = await User.findOne({ username: username, isDeleted: false })
             if (findUser) {
                 const passwordMatch = await bcrypt.compare(password, findUser.password);
-                if(passwordMatch){
+                if (passwordMatch) {
                     const token = jwt.sign({ id: findUser._id, username: findUser.username }, JWT_SECRET, { expiresIn: '1h' });
                     const updatedUser = await User.findByIdAndUpdate(findUser._id, { $set: { authToken: token, loginTime: new Date() } });
                     res.status(200).json({
@@ -64,7 +64,7 @@ const loginUser = async (req, res) => {
                         data: updatedUser,
                         message: "Logged in successfully"
                     });
-                }else{
+                } else {
                     return res.status(400).json({
                         status: 400,
                         message: "Password is incorrect"
@@ -87,7 +87,37 @@ const loginUser = async (req, res) => {
         res.status(500).json({ status: 500, message: "Internal server error", error: err.message });
     }
 }
+
+const logoutUser = async (req, res) => {
+    try {
+        const userId = req.me.id
+        if (userId) {
+            const findUser = await User.findOne({ _id: userId, isDeleted: false })
+            if (findUser) {
+                const updatedUser = await User.findByIdAndUpdate(findUser._id, { $set: { authToken: null, loginTime: null } });
+                res.status(200).json({
+                    status: 200,
+                    message: "Logged out successfully"
+                });
+            } else {
+                return res.status(400).json({
+                    status: 400,
+                    message: "User not found"
+                });
+            }
+        } else {
+            return res.status(400).json({
+                status: 400,
+                message: "UserId not found"
+            })
+        }
+    } catch (error) {
+        console.log(err);
+        res.status(500).json({ status: 500, message: "Internal server error", error: err.message });
+    }
+}
 module.exports = {
     createUser,
-    loginUser
+    loginUser,
+    logoutUser
 };
