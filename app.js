@@ -1,25 +1,20 @@
 // app.js
 const express = require('express');
-const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const connectDB = require('./config/db');
+const authRoutes = require('./routes/authRoutes');
 
 dotenv.config();
-
 const app = express();
 
 // Middleware
 app.use(express.json());
 
-// MongoDB Connection
-(async () => {
-  try {
-    await mongoose.connect(process.env.DB_URL);
-    console.log('✅ MongoDB connected');
-  } catch (error) {
-    console.error('❌ MongoDB connection error:', error.message);
-    process.exit(1);
-  }
-})();
+// Connect to MongoDB
+connectDB();
+
+// Routes
+app.use('/api/auth', authRoutes);
 
 // Base route (for testing)
 app.get('/', (req, res) => {
