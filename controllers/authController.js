@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const UserFollow = require("../models/UserFollow");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -48,7 +49,6 @@ exports.register = async (req, res) => {
       message: "User registered successfully.",
       error: {},
     });
-
   } catch (error) {
     console.error("Register error:", error);
     return res.status(400).json({
@@ -116,9 +116,22 @@ exports.me = async (req, res) => {
         error: {},
       });
     } else {
+      const followerCount = await UserFollow.countDocuments({
+        followingId: req.userId,
+        isDeleted: false,
+        status: "accepted",
+      });
+      const followingCount = await UserFollow.countDocuments({
+        followerId: req.userId,
+        isDeleted: false,
+        status: "accepted",
+      });
+      const userData = user.toObject();
+      userData.followerCount = followerCount;
+      userData.followingCount = followingCount;
       return res.status(200).json({
         status: 200,
-        data: user,
+        data: userData,
         message: "User fetch successfully",
         error: {},
       });
