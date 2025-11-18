@@ -75,8 +75,8 @@ exports.register = async (req, res) => {
 
   } catch (error) {
     console.error("Register error:", error);
-    return res.status(500).json({
-      status: 500,
+    return res.status(400).json({
+      status: 400,
       data: {},
       message: "Server error during registration.",
       error: error.message,
@@ -127,8 +127,8 @@ exports.login = async (req, res) => {
     });
   } catch (error) {
     console.error("login error:", error);
-    return res.status(500).json({
-      status: 500,
+    return res.status(400).json({
+      status: 400,
       data: {},
       message: "Server error during login.",
       error: error.message,
@@ -156,8 +156,8 @@ exports.me = async (req, res) => {
     }
   } catch (err) {
     console.error("Me error", err);
-    return res.status(500).json({
-      status: 500,
+    return res.status(400).json({
+      status: 400,
       data: {},
       message: "Server error.",
       error: err.message,
@@ -186,8 +186,8 @@ exports.logout = async (req, res) => {
     });
   } catch (error) {
     console.error("logout account error", error);
-    return res.status(500).json({
-      status: 500,
+    return res.status(400).json({
+      status: 400,
       data: {},
       message: "Server error during logout.",
       error: error.message,
@@ -210,8 +210,8 @@ exports.deleteAccount = async (req, res) => {
     });
   } catch (err) {
     console.error("Delete account error", err);
-    return res.status(500).json({
-      status: 500,
+    return res.status(400).json({
+      status: 400,
       data: {},
       message: "Server error during account deleting.",
       error: err.message,

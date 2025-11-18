@@ -6,11 +6,10 @@ const userRoutes = require("./routes/userRoutes");
 
 dotenv.config();
 const app = express();
+// temporarily ensure parsing during local dev
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// ❗ IMPORTANT: avoid body parsing conflict on Vercel
-if (process.env.VERCEL !== "1") {
-  app.use(express.json());
-}
 
 // DB connect
 connectDB().catch(err => console.error("MongoDB error:", err));
