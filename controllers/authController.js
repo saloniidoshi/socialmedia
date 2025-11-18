@@ -8,17 +8,6 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
 exports.register = async (req, res) => {
   try {
     const { name, email, password, number } = req.body;
-
-    // Validate required fields
-    if (!name || !email || !password || !number) {
-      return res.status(400).json({
-        status: 400,
-        data: {},
-        message: "Name, email, number, and password are required.",
-        error: {},
-      });
-    }
-
     // Check existing email
     const existingUser = await User.findOne({ email, isDeleted: false });
     if (existingUser) {
@@ -37,19 +26,6 @@ exports.register = async (req, res) => {
         status: 409,
         data: {},
         message: "Name is not available.",
-        error: {},
-      });
-    }
-
-    // Password validation
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    if (!passwordRegex.test(password)) {
-      return res.status(400).json({
-        status: 400,
-        data: {},
-        message:
-          "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.",
         error: {},
       });
     }
@@ -87,14 +63,7 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({
-        status: 400,
-        data: {},
-        message: "Email and password are required.",
-        error: {},
-      });
-    }
+
     // Check existing email
     const existingUser = await User.findOne({ email, isDeleted: false });
     if (!existingUser) {
