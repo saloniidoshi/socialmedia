@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
+const postRoutes = require("./routes/postRoutes");
 
 dotenv.config();
 const app = express();
@@ -17,6 +18,7 @@ connectDB().catch(err => console.error("MongoDB error:", err));
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/post", postRoutes);
 
 // Test route
 app.get("/", (req, res) => res.send("Social Media API is running..."));

@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const UserFollow = require("../models/UserFollow");
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 exports.updatePrivacy = async (req, res) => {
   try {
     const user = await User.findById(req.userId);
@@ -174,47 +174,47 @@ exports.followersList = async (req, res) => {
       });
     }
     const followerCount = await UserFollow.aggregate([
-  // Stage 1: Match the conditions
-  {
-    $match: {
-      followingId: new mongoose.Types.ObjectId(req.userId),
-      isDeleted: false,
-      status: "accepted",
-    },
-  },
-  // Stage 2: Join with User collection
-  {
-    $lookup: {
-      from: "users", // collection name (lowercase, plural)
-      localField: "followingId", // field from UserFollow
-      foreignField: "_id", // field from User
-      as: "userDetails", // output array name
-    },
-  },
-  // Stage 3: Flatten the userDetails array
-  {
-    $unwind: "$userDetails",
-  },
-  // Stage 4: Project the fields you want
-  {
-    $project: {
-      _id: 1,
-      followingId: 1,
-      status: 1,
-      createdAt: 1, // if needed
-      followersName: "$userDetails.name", // or $userDetails.firstName, etc.
-      followersEmail: "$userDetails.email", // add other user fields if needed
-      // OR to include entire user object:
-      // userDetails: 1,
-    },
-  },
-]);
+      // Stage 1: Match the conditions
+      {
+        $match: {
+          followingId: new mongoose.Types.ObjectId(req.userId),
+          isDeleted: false,
+          status: "accepted",
+        },
+      },
+      // Stage 2: Join with User collection
+      {
+        $lookup: {
+          from: "users", // collection name (lowercase, plural)
+          localField: "followingId", // field from UserFollow
+          foreignField: "_id", // field from User
+          as: "userDetails", // output array name
+        },
+      },
+      // Stage 3: Flatten the userDetails array
+      {
+        $unwind: "$userDetails",
+      },
+      // Stage 4: Project the fields you want
+      {
+        $project: {
+          _id: 1,
+          followingId: 1,
+          status: 1,
+          createdAt: 1, // if needed
+          followersName: "$userDetails.name", // or $userDetails.firstName, etc.
+          followersEmail: "$userDetails.email", // add other user fields if needed
+          // OR to include entire user object:
+          // userDetails: 1,
+        },
+      },
+    ]);
     return res.status(200).json({
-      status:200,
-      data:followerCount,
-      message:"User follower list",
-      error:{}
-    })
+      status: 200,
+      data: followerCount,
+      message: "User follower list",
+      error: {},
+    });
   } catch (error) {
     console.error("userFollowerList error:", error);
     return res.status(400).json({
@@ -238,47 +238,47 @@ exports.followingList = async (req, res) => {
       });
     }
     const followerCount = await UserFollow.aggregate([
-  // Stage 1: Match the conditions
-  {
-    $match: {
-      followerId: new mongoose.Types.ObjectId(req.userId),
-      isDeleted: false,
-      status: "accepted",
-    },
-  },
-  // Stage 2: Join with User collection
-  {
-    $lookup: {
-      from: "users", // collection name (lowercase, plural)
-      localField: "followingId", // field from UserFollow
-      foreignField: "_id", // field from User
-      as: "userDetails", // output array name
-    },
-  },
-  // Stage 3: Flatten the userDetails array
-  {
-    $unwind: "$userDetails",
-  },
-  // Stage 4: Project the fields you want
-  {
-    $project: {
-      _id: 1,
-      followingId: 1,
-      status: 1,
-      createdAt: 1, // if needed
-      followersName: "$userDetails.name", // or $userDetails.firstName, etc.
-      followersEmail: "$userDetails.email", // add other user fields if needed
-      // OR to include entire user object:
-      // userDetails: 1,
-    },
-  },
-]);
+      // Stage 1: Match the conditions
+      {
+        $match: {
+          followerId: new mongoose.Types.ObjectId(req.userId),
+          isDeleted: false,
+          status: "accepted",
+        },
+      },
+      // Stage 2: Join with User collection
+      {
+        $lookup: {
+          from: "users", // collection name (lowercase, plural)
+          localField: "followingId", // field from UserFollow
+          foreignField: "_id", // field from User
+          as: "userDetails", // output array name
+        },
+      },
+      // Stage 3: Flatten the userDetails array
+      {
+        $unwind: "$userDetails",
+      },
+      // Stage 4: Project the fields you want
+      {
+        $project: {
+          _id: 1,
+          followingId: 1,
+          status: 1,
+          createdAt: 1, // if needed
+          followersName: "$userDetails.name", // or $userDetails.firstName, etc.
+          followersEmail: "$userDetails.email", // add other user fields if needed
+          // OR to include entire user object:
+          // userDetails: 1,
+        },
+      },
+    ]);
     return res.status(200).json({
-      status:200,
-      data:followerCount,
-      message:"User follower list",
-      error:{}
-    })
+      status: 200,
+      data: followerCount,
+      message: "User follower list",
+      error: {},
+    });
   } catch (error) {
     console.error("userFollowingList error:", error);
     return res.status(400).json({
@@ -302,48 +302,48 @@ exports.requestList = async (req, res) => {
       });
     }
     const followerCount = await UserFollow.aggregate([
-  // Stage 1: Match the conditions
-  {
-    $match: {
-      followingId: new mongoose.Types.ObjectId(req.userId),
-      isDeleted: false,
-      status: "pending",
-    },
-  },
-  // Stage 2: Join with User collection
-  {
-    $lookup: {
-      from: "users", // collection name (lowercase, plural)
-      localField: "followingId", // field from UserFollow
-      foreignField: "_id", // field from User
-      as: "userDetails", // output array name
-    },
-  },
-  // Stage 3: Flatten the userDetails array
-  {
-    $unwind: "$userDetails",
-  },
-  // Stage 4: Project the fields you want
-  {
-    $project: {
-      _id: 1,
-      followingId: 1,
-      status: 1,
-      createdAt: 1, // if needed
-      followersName: "$userDetails.name", // or $userDetails.firstName, etc.
-      followersEmail: "$userDetails.email", // add other user fields if needed
-      // OR to include entire user object:
-      // userDetails: 1,
-    },
-  },
-]);
+      // Stage 1: Match the conditions
+      {
+        $match: {
+          followingId: new mongoose.Types.ObjectId(req.userId),
+          isDeleted: false,
+          status: "pending",
+        },
+      },
+      // Stage 2: Join with User collection
+      {
+        $lookup: {
+          from: "users", // collection name (lowercase, plural)
+          localField: "followingId", // field from UserFollow
+          foreignField: "_id", // field from User
+          as: "userDetails", // output array name
+        },
+      },
+      // Stage 3: Flatten the userDetails array
+      {
+        $unwind: "$userDetails",
+      },
+      // Stage 4: Project the fields you want
+      {
+        $project: {
+          _id: 1,
+          followingId: 1,
+          status: 1,
+          createdAt: 1, // if needed
+          followersName: "$userDetails.name", // or $userDetails.firstName, etc.
+          followersEmail: "$userDetails.email", // add other user fields if needed
+          // OR to include entire user object:
+          // userDetails: 1,
+        },
+      },
+    ]);
     return res.status(200).json({
-      status:200,
-      data:followerCount,
-      message:"User follow request list",
-      error:{}
-    })
-  }catch (error) {
+      status: 200,
+      data: followerCount,
+      message: "User follow request list",
+      error: {},
+    });
+  } catch (error) {
     console.error("userRequestList error:", error);
     return res.status(400).json({
       status: 400,
@@ -351,7 +351,6 @@ exports.requestList = async (req, res) => {
       message: "Server error while updating user request list.",
       error: error.message,
     });
-
   }
 };
 
@@ -369,32 +368,31 @@ exports.requestAction = async (req, res) => {
       });
     }
     const userRequests = await UserFollow.findOne({
-      followerId:req.userId,
-      followingId:followingId,
-      status:"pending",
-      isDeleted:false
-    })
-    if(userRequests){
-     const result = await UserFollow.findByIdAndUpdate(
+      followerId: req.userId,
+      followingId: followingId,
+      status: "pending",
+      isDeleted: false,
+    });
+    if (userRequests) {
+      const result = await UserFollow.findByIdAndUpdate(
         userRequests._id,
         { status: status },
-        { new: true }  // Returns the updated document
+        { new: true } // Returns the updated document
       );
-    return res.status(200).json({
-      status:200,
-      data:result,
-      message:`User requests ${status} successfully`,
-      error:{}
-    })
-    }else{
+      return res.status(200).json({
+        status: 200,
+        data: result,
+        message: `User requests ${status} successfully`,
+        error: {},
+      });
+    } else {
       return res.status(400).json({
-      status:400,
-      data:{},
-      message:"User requests not found",
-      error:{}
-    })
+        status: 400,
+        data: {},
+        message: "User requests not found",
+        error: {},
+      });
     }
-
   } catch (error) {
     console.error("requestAction error:", error);
     return res.status(400).json({
@@ -403,6 +401,5 @@ exports.requestAction = async (req, res) => {
       message: "Server error while updating user requests action.",
       error: error.message,
     });
-
   }
-}
+};
