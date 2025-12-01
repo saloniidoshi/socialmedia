@@ -10,9 +10,18 @@ const { body } = require("express-validator");
   (exports.deletePostRules = [
     body("postId").notEmpty().withMessage("PostId is required"),
   ]);
- (exports.archivePostRules = [
-    body("postId").notEmpty().withMessage("PostId is required"),
-  ]);
-   (exports.pinnedPostRules = [
-    body("postId").notEmpty().withMessage("PostId is required"),
-  ]);
+(exports.archivePostRules = [
+  body("postId").notEmpty().withMessage("PostId is required"),
+]);
+(exports.pinnedPostRules = [
+  body("postId").notEmpty().withMessage("PostId is required"),
+]);
+(exports.listPostRules = [
+  body("postId").notEmpty().withMessage("PostId is required"),
+]);
+(exports.getPostRules = [
+  body("postId").notEmpty().withMessage("PostId is required"),
+]);
+(exports.generateCaptionRules = [
+  body("prompt").notEmpty().withMessage("Prompt is required"),
+]);

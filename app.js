@@ -4,7 +4,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const postRoutes = require("./routes/postRoutes");
-
+const axios = require("axios");
 dotenv.config();
 const app = express();
 // temporarily ensure parsing during local dev

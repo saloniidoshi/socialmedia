@@ -1,6 +1,7 @@
 const Post = require("../models/Post");
 const User = require("../models/User");
 const mongoose = require("mongoose");
+const axios = require("axios");
 
 exports.createPost = async (req, res) => {
   try {
@@ -209,3 +210,98 @@ exports.pinnedPost = async (req, res) => {
     });
   }
 };
+
+exports.listPost = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const postData = await Post.find({ userId, isDeleted: false, isArchive: false }).sort({
+      isPin: -1,
+    });
+    return res.status(200).json({
+      status: 200,
+      data: postData,
+      message: "Post list successfully",
+      error: {},
+    });
+  } catch (error) {
+    console.error("listPost error:", error);
+    return res.status(400).json({
+      status: 400,
+      data: {},
+      message: "Server error while listing post.",
+      error: error.message,
+    });
+  }
+};
+
+exports.getPost = async (req, res) => {
+  try {
+    const postId = req.body.postId;
+    const postData = await Post.findOne({ _id: postId, isDeleted: false });
+    if (!postData) {
+      return res.status(404).json({
+        status: 404,
+        data: {},
+        message: "Post not found.",
+        error: {},
+      });
+    }
+    return res.status(200).json({
+      status: 200,
+      data: postData,
+      message: "Post fetched successfully",
+      error: {},
+    });
+  } catch (error) {
+    console.error("getPost error:", error);
+    return res.status(400).json({
+      status: 400,
+      data: {},
+      message: "Server error while fetching post.",
+      error: error.message,
+    });
+  }
+};
+
+exports.generateCaption = async (req, res) => {
+  try {
+    const { prompt } = req.body;
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: process.env.MODEL,
+        messages: [
+          {
+            role: "user",
+            content: `Generate a caption for: ${prompt}`,
+          },
+        ],
+      }),
+    });
+    const data = await response.json();
+    const aiRaw = data?.choices?.[0]?.message?.content || "No caption generated";
+    // Clean extra quotes
+    const aiOutput =
+      aiRaw.startsWith('"') && aiRaw.endsWith('"')
+        ? aiRaw.slice(1, -1)
+        : aiRaw;
+    return res.status(200).json({
+      status: 200,
+      data: aiOutput,
+      message: "Caption generated successfully",
+      error: {},
+    });
+  } catch (error) {
+    console.error("generateCaption error:", error.message);
+    return res.status(400).json({
+      status: 400,
+      data: {},
+      message: "Server error while generating caption.",
+      error: error.message,
+    });
+  }
+}

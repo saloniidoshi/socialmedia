@@ -7,7 +7,10 @@ const {
   updatePostRules,
   deletePostRules,
   archivePostRules,
-  pinnedPostRules
+  pinnedPostRules,
+  listPostRules,
+  getPostRules,
+  generateCaptionRules,
 } = require("../validator/postValidator");
 const validate = require("../middlewares/validate");
 
@@ -45,5 +48,24 @@ router.post(
   pinnedPostRules,
   validate,
   postController.pinnedPost
+);
+router.get("/listPost",
+  auth,
+  listPostRules,
+  validate,
+  postController.listPost
+);
+router.get("/getPost",
+  auth,
+  getPostRules,
+  validate,
+  postController.getPost
+);
+router.post(
+  "/generateCaption",
+  auth,
+  generateCaptionRules,
+  validate,
+  postController.generateCaption
 );
 module.exports = router;
